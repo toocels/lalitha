@@ -2,9 +2,7 @@
 body {
   font-family: Arial, sans-serif;
   color: #ddd;
-  /* Light gray text */
   background-color: black;
-  /* Dark background */
   margin: 0;
   padding: 0;
 }
@@ -15,7 +13,6 @@ body {
   justify-content: space-between;
   align-items: center;
   background-color: #2c3e50;
-  /* Dark blue-gray */
   color: white;
   padding: 15px 20px;
 }
@@ -43,41 +40,33 @@ body {
 .internshipList {
   max-width: 1000px;
   margin: 30px auto;
-  /* Added top margin for spacing */
   padding: 20px;
   background: #262626;
-  /* Dark gray */
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Middle Heading */
 .pageHeading {
   font-size: 2rem;
   text-align: center;
-  color: #ffffff;
-  /* Brighter white */
+  color: #fff;
 }
 
-/* Divider */
 .divider {
   border: none;
   height: 2px;
   background-color: #444;
-  /* Darker divider */
   margin: 20px 0;
 }
 
 /* Internship Cards */
 .internshipCard {
   background-color: #f0f0f0;
-  /* Light gray */
   border-radius: 8px;
   padding: 15px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   margin-bottom: 20px;
   color: #222;
-  /* Dark text for readability */
 }
 
 .cardContent {
@@ -100,12 +89,15 @@ body {
 .applyButton {
   background-color: #27ae60;
   color: white;
-  padding: 12px 24px;
+  padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: background 0.3s;
+  margin-top: 10px;
+  display: block;
+  text-align: left;
 }
 
 .applyButton:hover {
@@ -115,7 +107,6 @@ body {
 /* Contact Info */
 .contactInfo {
   background: #e0e0e0;
-  /* Slightly darker than the card */
   padding: 10px;
   border-radius: 5px;
   text-align: left;
@@ -132,7 +123,6 @@ body {
   font-size: 1.1rem;
   font-weight: bold;
   color: #222;
-  /* Darker text */
 }
 
 .skillsContainer {
@@ -192,7 +182,7 @@ body {
   text-decoration: underline;
 }
 
-.cardTitle{
-  font-size: 2.0rem;
+.cardTitle {
+  font-size: 2rem;
   font-weight: bold;
 }

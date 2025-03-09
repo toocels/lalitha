@@ -1,13 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Papa from 'papaparse';
-import Fuse from 'fuse.js'; // Import Fuse.js
+import Fuse from 'fuse.js';
 import styles from './internship-list.module.css';
 
 export default function Page() {
   const [internships, setInternships] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchCombined, setSearchCombined] = useState('');
+  const [searchDuration, setSearchDuration] = useState('');
+  const [searchLocation, setSearchLocation] = useState('');
 
   // Fetch data from Google Sheets
   useEffect(() => {
@@ -19,7 +21,6 @@ export default function Page() {
         const response = await fetch(sheetUrl);
         const csvText = await response.text();
 
-        // Parse CSV data
         Papa.parse(csvText, {
           header: true,
           skipEmptyLines: true,
@@ -35,19 +36,56 @@ export default function Page() {
     fetchData();
   }, []);
 
-  // Configure Fuse.js options
+  // Fuse.js options for fuzzy matching
   const fuseOptions = {
-    keys: ['Name', 'Location', 'Skills required'], // Fields to search
-    threshold: 0.4, // Adjust sensitivity (lower is stricter)
+    keys: ['Name', 'Description', 'Skills required'],
+    threshold: 0.4,
+    includeScore: true,
   };
 
-  // Initialize Fuse.js with the internships data
-  const fuse = new Fuse(internships, fuseOptions);
+  // Memoized Fuse instance
+  const fuse = useMemo(() => new Fuse(internships, fuseOptions), [internships]);
 
-  // Perform fuzzy search when filtering internships
-  const filteredInternships = searchTerm
-    ? fuse.search(searchTerm).map((result) => result.item) // Extract items from Fuse results
-    : internships; // Show all internships if no search term
+  // Filtering logic with exact match prioritization
+  const filteredInternships = useMemo(() => {
+    if (!searchCombined && !searchDuration && !searchLocation) {
+      return internships;
+    }
+
+    let results = internships;
+
+    // Combined search (Name, Description, Requirements)
+    if (searchCombined) {
+      const exactMatches = internships.filter((internship) => {
+        const combinedFields =
+          `${internship.Name} ${internship.Description} ${internship['Skills required']}`.toLowerCase();
+        return combinedFields.includes(searchCombined.toLowerCase());
+      });
+
+      if (exactMatches.length > 0) {
+        results = exactMatches;
+      } else {
+        // Fuzzy search if no exact matches found
+        results = fuse.search(searchCombined).map((result) => result.item);
+      }
+    }
+
+    // Filter by Duration
+    if (searchDuration) {
+      results = results.filter((internship) =>
+        internship.Duration?.toLowerCase().includes(searchDuration.toLowerCase())
+      );
+    }
+
+    // Filter by Location
+    if (searchLocation) {
+      results = results.filter((internship) =>
+        internship.Location?.toLowerCase().includes(searchLocation.toLowerCase())
+      );
+    }
+
+    return results;
+  }, [internships, searchCombined, searchDuration, searchLocation, fuse]);
 
   return (
     <div>
@@ -67,14 +105,30 @@ export default function Page() {
         <h1 className={styles.pageHeading}>Internship Opportunities</h1>
         <hr className={styles.divider} />
 
-        {/* Search Bar */}
-        <input
-          type="text"
-          placeholder="Search internships by company, location or skills..."
-          className={styles.searchInput}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+        {/* Search Inputs */}
+        <div className={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Search by Name, Description or Requirements"
+            className={styles.searchInput}
+            value={searchCombined}
+            onChange={(e) => setSearchCombined(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Search by Duration"
+            className={styles.searchInput}
+            value={searchDuration}
+            onChange={(e) => setSearchDuration(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Search by Location"
+            className={styles.searchInput}
+            value={searchLocation}
+            onChange={(e) => setSearchLocation(e.target.value)}
+          />
+        </div>
 
         {/* Internship Cards */}
         {filteredInternships.map((internship, index) => (
@@ -105,35 +159,31 @@ export default function Page() {
 
               {/* Right Section */}
               <div className={styles.cardRight}>
-                {internship['Google Form Link'] && (
-                  <a
-                    href={internship['Google Form Link']}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <button className={styles.applyButton}>Apply Now</button>
-                  </a>
-                )}
-
                 {(internship['Contact name'] ||
                   internship['Contact phone'] ||
                   internship['Contact email']) && (
-                    <div className={styles.contactInfo}>
-                      <h4>Contact Info</h4>
-                      <p>
-                        <strong>Name:</strong> {internship['Contact name']}
-                      </p>
-                      <p>
-                        <strong>Phone:</strong> {internship['Contact phone']}
-                      </p>
-                      <p>
-                        <strong>Email:</strong> {internship['Contact email']}
-                      </p>
-                    </div>
-                  )}
+                  <div className={styles.contactInfo}>
+                    <h4>Contact Info</h4>
+                    {internship['Contact name'] && (
+                      <p><strong>Name:</strong> {internship['Contact name']}</p>
+                    )}
+                    {internship['Contact phone'] && (
+                      <p><strong>Phone:</strong> {internship['Contact phone']}</p>
+                    )}
+                    {internship['Contact email'] && (
+                      <p><strong>Email:</strong> {internship['Contact email']}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Apply Now Button Below Contact Info */}
+                {internship['Apply Link'] && (
+                  <a href={internship['Google Form Link']} target="_blank" rel="noopener noreferrer">
+                    <button className={styles.applyButton}>Apply Now</button>
+                  </a>
+                )}
               </div>
             </div>
-
             {/* Skills Container */}
             {internship['Skills required'] && (
               <>
