@@ -1,0 +1,135 @@
+/* internship-list.module.css */
+
+.internshipList {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+  background-color: #f0f0f0; /* Grey background */
+}
+
+.pageHeading {
+  font-size: 2rem;
+  text-align: center;
+  color: #000;
+}
+
+.divider {
+  border: none;
+  height: 2px;
+  background-color: #ccc;
+  margin-bottom: 20px;
+}
+
+.internshipCard {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.cardContent {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cardLeft {
+  width: calc(70%);
+}
+
+.cardTitle {
+  font-size: 1.4rem;
+  color: #000;
+}
+
+.cardDetail {
+  font-size: .95rem;
+  color: #000;
+}
+
+.applyButton {
+ background-color:#3498db ;
+ color:#fff ;
+ border:none ;
+ padding :10px20px ;
+ border-radius :6px ;
+ cursor:pointer ;
+ transition :.3s ease-in-out ;
+ margin-top:10px;
+}
+
+.applyButton:hover{
+ background-color:#2980b9 ; 
+ transform :scale(1.05);
+}
+
+.contactInfo{
+ margin-top :15px ;
+ padding :10px ;
+ background-color:#f7f9fc ;
+ border-radius :6px ;
+ width :100% ;
+ font-size:.9rem ; 
+ text-align:left ;
+ color:#000; 
+}
+
+.contactInfo h4{
+ margin-bottom :8px ;
+ color:#000 ; 
+ font-size:.95rem ; 
+}
+
+.skillTag{
+ display:inline-block; 
+ background-color:#3498db ;
+ color:#fff ;
+ padding :3px6px ;
+ border-radius :4px ;
+ margin-right :4px ;
+ margin-top :4px ;
+ font-size :.8rem ; 
+}
+
+/* Search Input Styling */
+.searchInput {
+ width:100%;
+ padding:12px15px;
+ margin-bottom:20px;
+ border-radius:8px;
+ border:none;
+ box-shadow:rgba(0,0,0,.1)0px2px5px inset;
+ font-size:.95rem;
+ color:#000; /* Black text */
+ background-color:#ffffff; /* White background */
+}
+
+.searchInput::placeholder {
+ color:#888; /* Grey placeholder text */
+}
+
+.searchInput:focus {
+ outline:none;
+ border-color:#3498db; /* Highlight border on focus */
+ box-shadow:rgba(52,152,219,.5)0px0px5px inset;
+}
+
+/* Responsive adjustments */
+@media(max-width :768px){
+ .cardContent{
+   flex-direction :column ; 
+ }
+
+ .cardRight,.cardLeft{
+   width :100% ; 
+ }
+
+ .applyButton{
+   width:auto; 
+   margin-bottom:10px; 
+ }
+
+ .contactInfo{
+   width :100% ; 
+ }
+}
