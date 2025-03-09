@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Papa from 'papaparse';
 import Fuse from 'fuse.js';
 import styles from './internship-list.module.css';
+import '../globals.css';
 
 export default function Page() {
   const [internships, setInternships] = useState([]);
