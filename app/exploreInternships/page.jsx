@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Papa from 'papaparse';
+import Fuse from 'fuse.js'; // Import Fuse.js
 import styles from './internship-list.module.css';
 
 export default function Page() {
@@ -34,17 +35,34 @@ export default function Page() {
     fetchData();
   }, []);
 
-  // Filter internships based on the search term
-  const filteredInternships = internships.filter((internship) =>
-    internship.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    internship.Location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    internship['Skills required']
-      ?.toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
+  // Configure Fuse.js options
+  const fuseOptions = {
+    keys: ['Name', 'Location', 'Skills required'], // Fields to search
+    threshold: 0.4, // Adjust sensitivity (lower is stricter)
+  };
+
+  // Initialize Fuse.js with the internships data
+  const fuse = new Fuse(internships, fuseOptions);
+
+  // Perform fuzzy search when filtering internships
+  const filteredInternships = searchTerm
+    ? fuse.search(searchTerm).map((result) => result.item) // Extract items from Fuse results
+    : internships; // Show all internships if no search term
 
   return (
     <div>
+      {/* Navbar */}
+      <nav className={styles.navbar}>
+        <div className={styles.logo}>Logo</div>
+        <div className={styles.navTitle}>Internship Portal</div>
+        <div className={styles.navLinks}>
+          <a href="/">Home</a>
+          <a href="/about">About</a>
+          <a href="/contact">Contact</a>
+        </div>
+      </nav>
+
+      {/* Main Content */}
       <div className={styles.internshipList}>
         <h1 className={styles.pageHeading}>Internship Opportunities</h1>
         <hr className={styles.divider} />
@@ -134,6 +152,7 @@ export default function Page() {
           </div>
         ))}
       </div>
+
       {/* Footer Section */}
       <footer className={styles.footer}>
         <ul className={styles.footerLinks}>
